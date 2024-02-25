@@ -2,6 +2,33 @@ use std::{thread, time};
 use enigo::{Enigo, Key, KeyboardControllable};
 use iced::{widget, Sandbox, Element, Settings};
 
+fn get_alternative_key(ch: char) -> char {
+    return match ch {
+        '~' => '`',
+        '!' => '1',
+        '@' => '2',
+        '#' => '3',
+        '$' => '4',
+        '%' => '5',
+        '^' => '6',
+        '&' => '7',
+        '*' => '8',
+        '(' => '9',
+        ')' => '0',
+        '_' => '-',
+        '+' => '=',
+        '{' => '[',
+        '}' => ']',
+        '|' => '\\',
+        ':' => ';',
+        '"' => '\'',
+        '<' => ',',
+        '>' => '.',
+        '?' => '/',
+        _ => ch,
+    }
+}
+
 fn generate_text(content: String, delay: u8) {
     let time_delay = time::Duration::from_secs(delay as u64);
     thread::sleep(time_delay);
@@ -16,9 +43,9 @@ fn generate_text(content: String, delay: u8) {
                 enigo.key_click(Key::Return)
             },
             '~'| '!' | '@' | '#' | '$' | '%' | '^' | '&' | '*' | '('| ')' | '_' | '+' | '{' | '}' | '|' | ':' | '"' | '<' | '>' | '?'  => {
-                println!("{}", ch);
-                enigo.key_click(Key::Shift);
-                enigo.key_click(Key::Layout(char));
+                enigo.key_down(Key::Shift);
+                enigo.key_click(Key::Layout(get_alternative_key(char)));
+                enigo.key_up(Key::Shift);
             },
             _ => {
                 if ch.is_uppercase() {
